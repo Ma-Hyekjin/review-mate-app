@@ -1,4 +1,4 @@
-// app/(user)/events/page.tsx
+// app/(user)/mypage/events/page.tsx
 "use client";
 
 import SubPageHeader from "@/components/SubPageHeader";

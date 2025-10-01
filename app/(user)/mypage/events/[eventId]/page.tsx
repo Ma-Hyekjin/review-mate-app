@@ -1,13 +1,10 @@
 // app/(user)/events/[eventId]/page.tsx
 
-// =================================================
-// === 최종 수정 버전입니다. 이 주석이 보이면 성공입니다. ===
-// =================================================
-"use client";
-
-import SubPageHeader from "@/components/SubPageHeader";
 import Image from "next/image";
+import Link from "next/link";
+import { FaChevronLeft } from "react-icons/fa";
 
+// 타입 정의는 기존과 같이 명확하게 유지합니다.
 interface EventDetailPageProps {
   params: { eventId: string };
 }
@@ -23,12 +20,18 @@ const getEventDetails = (id: string) => {
   return { title: "이벤트 상세", detailImage: "/event-detail-3.png" };
 };
 
-export default function EventDetailPage({ params }: EventDetailPageProps) {
+// 페이지 컴포넌트를 async 함수로 변경합니다.
+export default async function EventDetailPage({ params }: EventDetailPageProps) {
   const event = getEventDetails(params.eventId);
 
   return (
     <div>
-      <SubPageHeader title={event.title} />
+      <header className="relative flex h-14 items-center justify-center border-b dark:border-gray-700">
+        <Link href="/events" className="absolute left-4 p-2">
+          <FaChevronLeft size={20} />
+        </Link>
+        <h1 className="text-lg font-semibold">{event.title}</h1>
+      </header>
       <main className="p-4 sm:p-6">
         <div className="mx-auto max-w-lg">
           <div className="relative aspect-[9/16] w-full overflow-hidden rounded-lg">

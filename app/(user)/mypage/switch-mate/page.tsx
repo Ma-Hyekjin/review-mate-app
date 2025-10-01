@@ -1,4 +1,4 @@
-// app/(user)/switch-mate/page.tsx
+// app/(user)/mypage/switch-mate/page.tsx
 "use client";
 
 import { useState } from "react";

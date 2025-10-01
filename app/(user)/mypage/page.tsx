@@ -52,7 +52,7 @@ export default function MyPage() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">{session?.user?.email}</p> {/* 구글 이메일 */}
                   </div>
                 </div>
-                <button onClick={() => router.push('/edit-profile')} className="rounded-md border px-4 py-2 text-sm transition hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800">
+                <button onClick={() => router.push('/mypage/edit-profile')} className="rounded-md border px-4 py-2 text-sm transition hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-800">
                   수정
                 </button>
               </div>
@@ -70,7 +70,7 @@ export default function MyPage() {
                     <p className="text-sm text-gray-500 dark:text-gray-400">{mateInfo.persona}</p>
                   </div>
                 </div>
-                <button onClick={() => router.push('/switch-mate')} className="rounded-md bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+                <button onClick={() => router.push('/mypage/switch-mate')} className="rounded-md bg-black px-4 py-2 text-sm text-white transition hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
                   전환
                 </button>
               </div>
@@ -79,23 +79,23 @@ export default function MyPage() {
             {/* --- 3. 기타 메뉴 영역 (기존과 동일) --- */}
             <div className="border-t pt-6 dark:border-gray-700">
               <ul className="space-y-2">
-                <li onClick={() => router.push('/saved-reviews')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                <li onClick={() => router.push('/mypage/saved-reviews')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
                   <span>저장된 리뷰</span>
                   <FaChevronRight className="text-gray-400" />
                 </li>
-                <li onClick={() => router.push('/events')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                <li onClick={() => router.push('/mypage/events')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
                   <span>이벤트</span>
                   <FaChevronRight className="text-gray-400" />
                 </li>
-                <li onClick={() => router.push('/qna')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                <li onClick={() => router.push('/mypage/qna')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
                   <span>Q&A</span>
                   <FaChevronRight className="text-gray-400" />
                 </li>
-                <li onClick={() => router.push('/support')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                <li onClick={() => router.push('/mypage/support')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
                   <span>고객센터</span>
                   <FaChevronRight className="text-gray-400" />
                 </li>
-                <li onClick={() => router.push('/privacy')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
+                <li onClick={() => router.push('/mypage/privacy')} className="flex cursor-pointer items-center justify-between rounded-md p-3 transition hover:bg-gray-100 dark:hover:bg-gray-800">
                   <span>개인정보 보호</span>
                   <FaChevronRight className="text-gray-400" />
                 </li>
