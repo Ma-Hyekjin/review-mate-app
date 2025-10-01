@@ -5,7 +5,7 @@ import { useState } from "react";
 import SubPageHeader from "@/components/SubPageHeader";
 import { FaPlus, FaTrash } from "react-icons/fa";
 
-// --- (타입 정의 및 PersonaEditor 컴포넌트는 이전과 동일) ---
+// 타입 정의
 interface Persona {
   gender: string;
   age: string;
@@ -16,6 +16,12 @@ interface PersonaEditorProps {
   onPersonaChange: (field: keyof Omit<Persona, 'personality'>, value: string) => void;
   onPersonalityChange: (type: string, value: string) => void;
 }
+// 페이지 props를 위한 타입 정의
+interface MateDetailPageProps {
+  params: { mateId: string };
+}
+
+// 페르소나 에디터 컴포넌트
 function PersonaEditor({ personaData, onPersonaChange, onPersonalityChange }: PersonaEditorProps) {
     const selectedStyle = "bg-black text-white dark:bg-white dark:text-black";
     const personalityPairs = [
@@ -43,7 +49,7 @@ function PersonaEditor({ personaData, onPersonaChange, onPersonalityChange }: Pe
           <label className="text-sm font-semibold">성향</label>
           <div className="mt-2 grid grid-cols-2 gap-4">
             {personalityPairs.map(pair => (
-              <button key={pair.key} onClick={() => onPersonalityChange(pair.key, pair.value)} className={`rounded-lg border py-3 text-base font-semibold transition hover:bg-gray-100 dark:hover:bg-gray-800 ${ personaData.personality[pair.key as keyof typeof personaData.personality] ? selectedStyle : '' }`}>{pair.value}</button>
+              <button key={pair.key} onClick={() => onPersonalityChange(pair.key, pair.value)} className={`rounded-lg border py-3 text-base font-semibold transition hover:bg-gray-100 dark:hover-bg-gray-800 ${ personaData.personality[pair.key as keyof typeof personaData.personality] ? selectedStyle : '' }`}>{pair.value}</button>
             ))}
           </div>
         </div>
@@ -51,44 +57,28 @@ function PersonaEditor({ personaData, onPersonaChange, onPersonalityChange }: Pe
     );
   }
 
-
-export default function MateDetailPage({ params }: { params: { mateId: string } }) {
+// 메인 페이지 컴포넌트
+export default function MateDetailPage({ params }: MateDetailPageProps) {
   // TODO: [DB] 실제로는 params.mateId를 사용해 DB에서 메이트 정보를 불러와야 합니다.
+  console.log("수정할 메이트 ID:", params.mateId);
+
   const [mateName, setMateName] = useState("메이트");
   const [persona, setPersona] = useState<Persona>({ gender: "남성", age: "20대", personality: { e: "E", i: "", s: "S", n: "", t: "T", f: "", j: "J", p: "" } });
-  const [reviews, setReviews] = useState<string[]>(["이 메이트는 친절하고 다정하게 답변해줘."]);
+  const [reviews, setReviews] = useState<string[]>(["이 메이트는 친절하고 다정하게 답변해줘.", "가끔은 시니컬한 농담을 던지기도 해."]);
   const [isPersonaEditorOpen, setIsPersonaEditorOpen] = useState(false);
 
-  const handlePersonaChange = (field: keyof Omit<Persona, 'personality'>, value: string) => {
-    setPersona(prev => ({ ...prev, [field]: value }));
-  };
-
+  const handlePersonaChange = (field: keyof Omit<Persona, 'personality'>, value: string) => { setPersona(prev => ({ ...prev, [field]: prev[field] === value ? "" : value })); };
   const handlePersonalityChange = (type: string, value: string) => {
     const opposites = { e: 'i', i: 'e', s: 'n', n: 's', t: 'f', f: 't', j: 'p', p: 'j' };
     const oppositeType = opposites[type as keyof typeof opposites];
-    setPersona(prev => ({
-      ...prev,
-      personality: { ...prev.personality, [type]: value, [oppositeType]: "" },
-    }));
+    setPersona(prev => ({ ...prev, personality: { ...prev.personality, [type]: isNaN(parseInt(type)) ? "" : value, [oppositeType]: isNaN(parseInt(type)) ? prev.personality[oppositeType as keyof typeof prev.personality] : "" } }));
   };
-
-  // --- 수정된 로직: 핸들러 함수 내용 추가 ---
-  const handleAddReview = () => {
-    setReviews(prev => ["", ...prev]);
-  };
-
-  const handleReviewChange = (index: number, value: string) => {
-    const newReviews = [...reviews];
-    newReviews[index] = value;
-    setReviews(newReviews);
-  };
-
-  const handleRemoveReview = (index: number) => {
-    setReviews(prev => prev.filter((_, i) => i !== index));
-  };
+  const handleAddReview = () => { setReviews(prev => ["", ...prev]); };
+  const handleReviewChange = (index: number, value: string) => { const newReviews = [...reviews]; newReviews[index] = value; setReviews(newReviews); };
+  const handleRemoveReview = (index: number) => { setReviews(prev => prev.filter((_, i) => i !== index)); };
   
   const handleSave = () => {
-    // TODO: [DB] 변경된 메이트 이름, 페르소나, 리뷰 목록을 DB에 업데이트하는 API 호출
+    // TODO: [DB] 변경된 메이트 이름, 페르소나, 리뷰 목록을 params.mateId를 기준으로 DB에 '업데이트(update)'해야 합니다.
     console.log("저장할 정보:", { mateName, persona, reviews });
     alert("메이트 정보가 저장되었습니다.");
   };
@@ -102,6 +92,7 @@ export default function MateDetailPage({ params }: { params: { mateId: string } 
             <label className="font-semibold">이름</label>
             <input type="text" value={mateName} onChange={(e) => setMateName(e.target.value)} className="w-full rounded-lg border bg-transparent p-3 focus:outline-none focus:ring-2 focus:ring-black dark:border-gray-600 dark:focus:ring-white"/>
           </div>
+
           <div className="space-y-2">
             <div className="flex w-full items-center justify-between text-left">
               <span className="font-semibold">간편 설정</span>
@@ -119,6 +110,7 @@ export default function MateDetailPage({ params }: { params: { mateId: string } 
               </div>
             )}
           </div>
+
           <div className="space-y-4">
             <div className="flex w-full items-center justify-between text-left">
               <span className="font-semibold">리뷰 리스트</span>
