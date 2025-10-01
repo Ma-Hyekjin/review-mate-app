@@ -1,10 +1,13 @@
 // app/(user)/events/[eventId]/page.tsx
+
+// =================================================
+// === 최종 수정 버전입니다. 이 주석이 보이면 성공입니다. ===
+// =================================================
 "use client";
 
 import SubPageHeader from "@/components/SubPageHeader";
 import Image from "next/image";
 
-// 타입을 명확하게 interface로 정의
 interface EventDetailPageProps {
   params: { eventId: string };
 }
@@ -20,7 +23,6 @@ const getEventDetails = (id: string) => {
   return { title: "이벤트 상세", detailImage: "/event-detail-3.png" };
 };
 
-// 컴포넌트가 받을 props 타입을 위에서 만든 interface로 지정합니다.
 export default function EventDetailPage({ params }: EventDetailPageProps) {
   const event = getEventDetails(params.eventId);
 
