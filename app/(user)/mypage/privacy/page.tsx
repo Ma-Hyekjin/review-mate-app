@@ -1,4 +1,7 @@
 // app/(legal)/privacy/page.tsx
+
+"use client"; 
+
 import SubPageHeader from "@/components/SubPageHeader";
 
 export default function PrivacyPage() {
