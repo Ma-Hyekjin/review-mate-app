@@ -4,14 +4,13 @@
 import SubPageHeader from "@/components/SubPageHeader";
 import Image from "next/image";
 
-// 타입을 더 명확하게 정의하기 위해 interface를 사용합니다.
+// 타입을 명확하게 interface로 정의
 interface EventDetailPageProps {
   params: { eventId: string };
 }
 
 // TODO: [DB] 실제로는 params.eventId를 사용해 DB에서 해당 이벤트의 상세 정보를 불러와야 합니다.
 const getEventDetails = (id: string) => {
-  // 지금은 id에 따라 다른 임시 데이터를 반환하는 가짜 함수입니다.
   if (id === "1") {
     return { title: "리뷰메이트 출시 기념 이벤트!", detailImage: "/event-detail-1.png" };
   }
@@ -43,5 +42,3 @@ export default function EventDetailPage({ params }: EventDetailPageProps) {
     </div>
   );
 }
-
-// 최종 수정
