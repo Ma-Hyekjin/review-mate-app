@@ -43,3 +43,5 @@ export default function EventDetailPage({ params }: EventDetailPageProps) {
     </div>
   );
 }
+
+// 최종 수정
