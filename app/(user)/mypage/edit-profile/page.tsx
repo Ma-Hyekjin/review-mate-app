@@ -4,7 +4,6 @@
 import { useState, useEffect } from "react";
 import SubPageHeader from "@/components/SubPageHeader";
 import { FcGoogle } from "react-icons/fc";
-import { useRouter } from "next/navigation";
 
 // --- (타입 정의 및 PersonaEditor 컴포넌트는 이전과 동일) ---
 interface Persona {
@@ -54,7 +53,6 @@ function PersonaEditor({ personaData, onPersonaChange, onPersonalityChange }: Pe
 
 
 export default function EditProfilePage() {
-  const router = useRouter();
   const [initialData, setInitialData] = useState<{ nickname: string; persona: Persona }>({ nickname: "김혁진", persona: { gender: "남성", age: "20대", personality: { e: "E", i: "", s: "S", n: "", t: "T", f: "", j: "J", p: "" } } });
   const [nickname, setNickname] = useState(initialData.nickname);
   const [persona, setPersona] = useState<Persona>(initialData.persona);

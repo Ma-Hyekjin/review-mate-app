@@ -14,7 +14,7 @@ export default function PrivacyPage() {
           <div className="space-y-6 text-sm">
             <section className="space-y-2">
               <h2 className="text-xl font-bold">제1조 (총칙)</h2>
-              <p>리뷰메이트(이하 '회사')는 이용자의 개인정보를 중요시하며, '정보통신망 이용촉진 및 정보보호'에 관한 법률을 준수하고 있습니다. 회사는 개인정보처리방침을 통하여 이용자가 제공하는 개인정보가 어떠한 용도와 방식으로 이용되고 있으며, 개인정보보호를 위해 어떠한 조치가 취해지고 있는지 알려드립니다.</p>
+              <p>리뷰메이트(이하 회사)는 이용자의 개인정보를 중요시하며, 정보통신망 이용촉진 및 정보보호에 관한 법률을 준수하고 있습니다. 회사는 개인정보처리방침을 통하여 이용자가 제공하는 개인정보가 어떠한 용도와 방식으로 이용되고 있으며, 개인정보보호를 위해 어떠한 조치가 취해지고 있는지 알려드립니다.</p>
             </section>
             <section className="space-y-2">
               <h2 className="text-xl font-bold">제2조 (수집하는 개인정보의 항목)</h2>
