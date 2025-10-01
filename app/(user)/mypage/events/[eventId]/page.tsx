@@ -4,7 +4,12 @@
 import SubPageHeader from "@/components/SubPageHeader";
 import Image from "next/image";
 
-// TODO: [DB] 실제로는 params.eventId를 사용해 DB에서 해당 이벤트의 상세 정보를 '불러와야(fetch)' 합니다.
+// 타입을 더 명확하게 정의하기 위해 interface를 사용합니다.
+interface EventDetailPageProps {
+  params: { eventId: string };
+}
+
+// TODO: [DB] 실제로는 params.eventId를 사용해 DB에서 해당 이벤트의 상세 정보를 불러와야 합니다.
 const getEventDetails = (id: string) => {
   // 지금은 id에 따라 다른 임시 데이터를 반환하는 가짜 함수입니다.
   if (id === "1") {
@@ -16,8 +21,8 @@ const getEventDetails = (id: string) => {
   return { title: "이벤트 상세", detailImage: "/event-detail-3.png" };
 };
 
-export default function EventDetailPage({ params }: { params: { eventId: string } }) {
-  // URL의 eventId 파라미터를 사용해 해당 이벤트 정보를 가져옵니다.
+// 컴포넌트가 받을 props 타입을 위에서 만든 interface로 지정합니다.
+export default function EventDetailPage({ params }: EventDetailPageProps) {
   const event = getEventDetails(params.eventId);
 
   return (
@@ -25,7 +30,6 @@ export default function EventDetailPage({ params }: { params: { eventId: string 
       <SubPageHeader title={event.title} />
       <main className="p-4 sm:p-6">
         <div className="mx-auto max-w-lg">
-          {/* public 폴더에 event-detail-1.png 등 세로로 긴 상세 이미지를 넣어야 합니다. */}
           <div className="relative aspect-[9/16] w-full overflow-hidden rounded-lg">
             <Image
               src={event.detailImage}
