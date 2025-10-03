@@ -23,11 +23,6 @@ export default function MyPage() {
     );
   }
 
-  // 로그인하지 않은 사용자는 로그인 페이지로 보냅니다.
-  if (status === "unauthenticated") {
-    router.replace('/login'); // replace를 사용해 뒤로가기 기록을 남기지 않습니다.
-    return null;
-  }
 
   return (
     <div className="relative min-h-screen pb-16">
