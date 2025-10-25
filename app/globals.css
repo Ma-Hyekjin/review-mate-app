@@ -1,26 +1,37 @@
-@import "tailwindcss";
+/* app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* Spoqa Han Sans Neo 웹 폰트는 layout.tsx의 <link> 태그로 로드하므로 @font-face 불필요 */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  :root { /* 라이트 모드 변수 */
+    --color-background: #FFFFFF;
+    --color-foreground: #12121E; /* grey-9 */
+    --color-primary: #00A0E0;
+    --color-gradient-start: #E6FCFF;
+    --color-gradient-mid: #73CEEF;
+    --color-gradient-end-light: var(--color-primary);
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  .dark { /* 다크 모드 변수 */
+    --color-background: #212121;
+    --color-foreground: #F5F5F5; /* grey-1 */
+    --color-primary: #076F99;
+    /* 그라데이션은 라이트 모드 변수를 사용하거나, 필요시 --color-*-dark 변수 추가 정의 */
+    --color-gradient-end-dark: var(--color-primary);
+  }
+
+  body {
+    /* CSS 변수를 사용하여 기본 배경/글자색 적용 */
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    /* 기본 폰트는 layout.tsx 에서 font-sans 클래스로 적용 */
+  }
+
+  /* 기본 line-height 전역 적용 */
+  h1, h2, h3, h4, h5, h6, p, span, div, li, a, button, input, textarea {
+    @apply leading-[150%];
+  }
 }
