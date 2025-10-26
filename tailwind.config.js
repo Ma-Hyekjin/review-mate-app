@@ -68,8 +68,8 @@ module.exports = {
       },
       backgroundImage: {
         // 그라데이션 정의 (CSS 변수 사용)
-        'gradient-light': 'linear-gradient(to right, var(--color-gradient-start), var(--color-gradient-mid), var(--color-gradient-end-light))',
-        'gradient-dark': 'linear-gradient(to right, var(--color-gradient-start-dark, var(--color-gradient-start)), var(--color-gradient-mid-dark, var(--color-gradient-mid)), var(--color-gradient-end-dark))',
+        'gradient-light': 'linear-gradient(to top, var(--color-gradient-start), var(--color-gradient-mid), var(--color-gradient-end-light))',
+        'gradient-dark': 'linear-gradient(to top, var(--color-gradient-start-dark, var(--color-gradient-start)), var(--color-gradient-mid-dark, var(--color-gradient-mid)), var(--color-gradient-end-dark))',
       },
     },
   },
