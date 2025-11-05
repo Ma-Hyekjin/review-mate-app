@@ -30,15 +30,15 @@ export default function BottomNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 z-30 w-full bg-background dark:border-gray-8">
-      <div className="mx-auto flex h-20 max-w-md items-center justify-around">
+      <div className="mx-auto flex h-20 max-w-md justify-around">
         {navItems.map((item) => {
           const isActive =
             item.href === "/main"
               ? pathname === item.href
               : pathname.startsWith(item.href);
 
-          const activeStyle = "text-primary font-medium";
-          const inactiveStyle = "text-gray-5";
+          const activeStyle = "text-primary font-medium text-base";
+          const inactiveStyle = "text-gray-5 text-sm";
           const disabledStyle = "text-gray-3 dark:text-gray-7 cursor-not-allowed";
 
           const iconStyle = isActive ? "grayscale-0" : "grayscale";
@@ -47,7 +47,7 @@ export default function BottomNav() {
             <Link
               key={item.label}
               href={item.disabled ? "#" : item.href}
-              className={`flex flex-col items-center gap-0.5 transition-colors ${
+              className={`flex flex-col items-center gap-0 justify-end pb-6 transition-colors ${
                 item.disabled
                   ? disabledStyle
                   : isActive
@@ -56,16 +56,16 @@ export default function BottomNav() {
               }`}
               onClick={(e) => item.disabled && e.preventDefault()}
             >
-              <div className={`relative flex h-14 w-14 items-center justify-center ${item.disabled ? "" : iconStyle}`} >
+              <div className={`relative flex h-16 w-16 items-center justify-center ${item.disabled ? "" : iconStyle}`} >
                 <Image
                   src={item.icon}
                   alt={item.label}
-                  width={56}
-                  height={56}
+                  width={64}
+                  height={64}
                   priority
                 />
               </div>
-              <span className="text-xs mt-0.5">{item.label}</span>
+              <span className="mt-0">{item.label}</span>
             </Link>
           );
         })}

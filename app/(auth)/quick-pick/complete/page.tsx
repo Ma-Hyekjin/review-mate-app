@@ -26,7 +26,6 @@ export default function QuickPickCompletePage() {
       router.push("/main");
     }, 2500);
 
-    // 컴포넌트 언마운트 시 모든 타이머 제거
     return () => {
       clearTimeout(fadeInTimer);
       clearTimeout(fadeOutTimer);
@@ -90,8 +89,6 @@ export default function QuickPickCompletePage() {
               완료!
             </h1>
           </div>
-          
-          {/* 3초 멘트는 삭제됨 */}
         </div>
 
       </div>
