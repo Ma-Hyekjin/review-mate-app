@@ -1,4 +1,4 @@
-# 리뷰메이트 (ReviewMate)
+# 🤖 리뷰메이트 (ReviewMate)
 
 ### Simply, Quickly, Easily - 나를 너무 잘 아는 너
 
@@ -19,28 +19,29 @@
 1.  **Frontend (Next.js Web App):**
     * 사용자가 키워드 입력, 문체(페르소나) 샘플 제공, 생성된 리뷰 확인 및 커뮤니티 피드를 이용하는 메인 인터페이스.
     * `TypeScript`, `React`, `Tailwind CSS`를 사용하여 개발.
-2.  **Backend (Next.js API Routes / Server Actions):**
+2.  **Backend (Next.js API Routes):**
     * 프론트엔드로부터 요청을 받아 AI 모델 API를 호출하고, 결과를 처리하여 반환.
-    * 사용자 데이터, 페르소나, 커뮤니티 피드 등을 데이터베이스에 저장/관리.
+    * `NextAuth.js`를 통해 사용자 인증을 처리하고, `Prisma`를 통해 DB에 저장/관리.
 3.  **AI Models (External APIs):**
     * **Text Generation:** `Clova LLM (HCX-003)` 및 `OpenAI API`를 활용하여 기본 리뷰 초안을 생성. (RAG 및 Few-shot 프롬프트 엔지니어링 적용)
 4.  **Database (Vercel Postgres + Prisma):**
-    * 사용자 정보, 페르소나(최대 3개), 생성된 리뷰, 커뮤니티 피드 데이터 등을 저장. `Prisma ORM`을 통해 관리.
+    * 사용자 정보(`User`), SNS 계정(`Account`), 세션(`Session`), 페르소나(`Mate`), 저장된 리뷰(`SavedReview`) 등을 저장. `Prisma ORM`을 통해 관리.
 5.  **Hosting (Vercel):**
-    * `Next.js` 애플리케이션 배포 및 관리를 위해 Vercel 플랫폼을 사용.
+    * `Next.js` 애플리케이션 배포 및 관리를 위해 Vercel 플랫폼을 사용. (`reviewmate-official.vercel.app` 도메인으로 운영 중)
 
 ---
 
 ## 🛠️ 기술 스택 (Tech Stack)
 
 * **Frontend:** `Next.js 14+ (App Router)`, `React`, `TypeScript`, `Tailwind CSS`
-* **Backend:** `Next.js API Routes / Server Actions`, `Node.js`
+* **Backend:** `Next.js API Routes`, `Node.js`
 * **Database:** `Vercel Postgres`, `Prisma ORM`
+* **Authentication:** `NextAuth.js (v4)`, `@next-auth/prisma-adapter`
 * **AI APIs:** `Clova LLM API (HCX-003)` / `OpenAI API`
 * **AI Concepts:** RAG (Retrieval-Augmented Generation), Few-Shot Learning
 * **Deployment:** `Vercel`
 * **Design:** `Figma`
-* 
+
 ---
 
 ## ✨ 주요 기능 및 개발 로드맵 (Features & Roadmap)
@@ -55,9 +56,10 @@
 * [x] **기본 UI/UX 디자인**: Figma 기반 핵심 페이지(로그인, 퀵픽, 메인) 디자인 완료
 * [x] **핵심 UI 구현**: 로그인, 퀵픽(페르소나 생성), 메인 페이지, Nav 레이아웃 UI 구현 완료
 * [x] **소셜 로그인**: `NextAuth.js`를 활용한 카카오/구글/네이버 로그인 연동
-* [ ] **Vercel 배포**: Vercel 배포 및 소셜 로그인 리디렉션 URL 설정
+* [x] **[DB] 사용자 인증 연동**: `PrismaAdapter`를 통해 3사 SNS 로그인 시 `User`, `Account`, `Session` 테이블에 사용자 정보 **저장 완료**
+* [x] **Vercel 배포**: Vercel 배포 및 3사 소셜 로그인 리디렉션 URL 설정 **완료** (`reviewmate-official.vercel.app`)
+* [ ] **[DB] 사용자 및 페르소나 저장**: 퀵픽 플로우에서 생성된 페르소나(최대 3개)를 `Mate` 테이블에 저장
 * [ ] **[AI 연동] 기본 텍스트 생성**: `Clova/OpenAI API` 연동하여 키워드 기반 리뷰 초안 생성 기능 구현
-* [ ] **[DB] 사용자 및 페르소나 저장**: 퀵픽 플로우에서 생성된 사용자 정보 및 페르소나(최대 3개) 저장
 
 ### P2: 페르소나 적용 및 고도화 (Persona Integration)
 
@@ -65,7 +67,7 @@ AI 생성 결과물에 사용자의 페르소나(문체)를 적용.
 
 * [ ] **[AI] 개인화 프롬프트 적용**: 저장된 페르소나(성별, 나이, MBTI, 샘플 텍스트 등)를 AI 프롬프트에 동적으로 주입
 * [ ] **[AI] RAG/Few-Shot 적용**: 사용자의 과거 리뷰 샘플(Details) 및 0순위 원칙을 RAG로 적용하여 '나다운' 텍스트 생성률 향상
-* [ ] **UI/UX 개선**: 페르소나 전환(최대 3개) UI 및 생성된 리뷰 수정/저장 기능 구현
+* [ ] **UI/UX 개선**: 페르소나 전환(최대 3개) UI 및 생성된 리뷰 수정/저장 기능 구현 (`SavedReview` 테이블)
 
 ### P3: 핵심 소셜 기능 - 커뮤니티 (Core Social Feature - Community)
 
@@ -89,7 +91,7 @@ MVP의 핵심 소셜 기능인 '페르소나 공유 커뮤니티 피드'를 구�
 
 1.  **Clone the repository:**
     ```bash
-    git clone [GITHUB_REPOSITORY_URL]
+    git clone [https://github.com/Ma-Hyekjin/review-mate-app.git](https://github.com/Ma-Hyekjin/review-mate-app.git)
     cd review-mate-app
     ```
 2.  **Install dependencies:**
@@ -97,11 +99,22 @@ MVP의 핵심 소셜 기능인 '페르소나 공유 커뮤니티 피드'를 구�
     npm install
     # or yarn install
     ```
-3.  **Set up environment variables:** Create a `.env.local` file with DB connection strings, AI API keys etc.
+3.  **Set up environment variables:**
+    프로젝트 루트에 `.env.local` 파일을 생성하고, Vercel 대시보드에서 `vercel env pull .env.local` 명령어를 통해 환경 변수들을 가져옵니다.
+
+    > [!IMPORTANT]
+    > 로컬 개발 시 `NEXTAUTH_URL`은 **`http://localhost:3000`** 으로 설정되어 있어야 합니다. (Vercel에서 pull 받은 후 이 값만 `localhost`로 수정해야 할 수도 있습니다.)
+
 4.  **Run Prisma commands:**
     ```bash
-    npx prisma migrate dev # Apply migrations
-    npx prisma generate # Generate Prisma Client
+    # (최초 또는 스키마 리셋 시)
+    npx prisma migrate reset
+
+    # (스키마 변경 시)
+    npx prisma migrate dev --name "migration_name"
+
+    # (클라이언트 갱신)
+    npx prisma generate
     ```
 5.  **Run the development server:**
     ```bash
