@@ -7,7 +7,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import db from "@/lib/db";
 
 // 'process.env.XXX'는 3단계에서 설정할 .env.local 파일의 값입니다.
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   // [1] Prisma Adapter 설정
   // 로그인 시, 이메일을 기준으로 DB에서 User를 찾거나 새로 생성합니다.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
