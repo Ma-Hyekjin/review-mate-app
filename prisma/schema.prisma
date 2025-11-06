@@ -1,0 +1,103 @@
+// prisma/schema.prisma
+
+// 1. 데이터베이스 연결 설정
+datasource db {
+  provider = "postgresql" // 우리는 Vercel Postgres를 사용할 예정
+  url      = env("DATABASE_URL")
+}
+
+// 2. Prisma 클라이언트 생성기 설정
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 3. 데이터 모델 정의
+
+// --- ⬇️ (수정됨) User 모델 ---
+// (NextAuth를 위해 'accounts'와 'sessions' 관계가 추가되었습니다)
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  avatarUrl     String?   @map("avatar_url")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  
+  // NextAuth 필수 관계
+  accounts      Account[]
+  sessions      Session[]
+
+  // 님의 기존 관계
+  mates         Mate[]
+  savedReviews  SavedReview[]
+}
+
+// --- ⬇️ (추가됨) NextAuth 필수 모델 3가지 ---
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String  @map("user_id")
+  type               String
+  provider           String
+  providerAccountId  String  @map("provider_account_id")
+  refresh_token      String? @db.Text
+  access_token       String? @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String? @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// --- ⬇️ (기존) 님의 Mate 및 SavedReview 모델 (수정 없음) ---
+
+// 메이트(AI 페르소나) 모델
+model Mate {
+  id           String    @id @default(cuid())
+  name         String
+  personaJson  String    @map("persona_json")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  savedReviews SavedReview[]
+}
+
+// 저장된 리뷰 모델
+model SavedReview {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  mateId String @map("mate_id")
+  mate   Mate   @relation(fields: [mateId], references: [id], onDelete: Cascade)
+}
