@@ -2,7 +2,7 @@
 
 // 1. 데이터베이스 연결 설정
 datasource db {
-  provider = "postgresql" // 우리는 Vercel Postgres를 사용할 예정
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -13,13 +13,13 @@ generator client {
 
 // 3. 데이터 모델 정의
 
-// --- ⬇️ (수정됨) User 모델 ---
-// (NextAuth를 위해 'accounts'와 'sessions' 관계가 추가되었습니다)
+// --- User 모델 ---
 model User {
   id            String    @id @default(cuid())
   email         String    @unique
   name          String?
-  avatarUrl     String?   @map("avatar_url")
+  image         String?   @map("avatar_url")
+  emailVerified DateTime? @map("email_verified")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime  @updatedAt @map("updated_at")
   
@@ -27,12 +27,12 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  // 님의 기존 관계
+  // 기존 관계
   mates         Mate[]
   savedReviews  SavedReview[]
 }
 
-// --- ⬇️ (추가됨) NextAuth 필수 모델 3가지 ---
+// --- NextAuth 필수 모델 3가지 ---
 
 model Account {
   id                 String  @id @default(cuid())
@@ -47,7 +47,8 @@ model Account {
   scope              String?
   id_token           String? @db.Text
   session_state      String?
-
+  refresh_token_expires_in Int? @map("refresh_token_expires_in")
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -73,7 +74,7 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
-// --- ⬇️ (기존) 님의 Mate 및 SavedReview 모델 (수정 없음) ---
+// --- Mate 및 SavedReview 모델 ---
 
 // 메이트(AI 페르소나) 모델
 model Mate {
