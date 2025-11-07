@@ -3,7 +3,6 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { useUiStore } from "@/stores/uiStore";
 interface SelectedImage {
   file: File;
   previewUrl: string;
@@ -14,7 +13,6 @@ export default function MainPage() {
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { setKeyboardOpen, isKeyboardOpen } = useUiStore();
 
   // 'initial': 초기 환영 메시지 화면
   // 'result': AI 결과 박스 + 버튼 화면
@@ -251,8 +249,6 @@ export default function MainPage() {
           <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            onFocus={() => setKeyboardOpen(true)} // 키보드 열림
-            onBlur={() => setKeyboardOpen(false)}  // 키보드 닫힘
             placeholder={
               viewMode === 'result'
                 ? "추가 코멘트를 입력해주세요"
