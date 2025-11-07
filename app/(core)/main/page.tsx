@@ -213,7 +213,7 @@ export default function MainPage() {
         
         {/* --- "하단 고정" 프롬포트창 --- */}
 
-        <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[55vh] flex-shrink-0">
+        <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[60vh] flex-shrink-0">
           
           <textarea
             value={inputText}
@@ -272,7 +272,7 @@ export default function MainPage() {
             className="absolute flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100 pointer-events-auto"
             style={{
               left: 25,
-              top: 418,
+              top: 408,
             }}
           >
             <Image
