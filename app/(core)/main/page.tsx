@@ -3,7 +3,7 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
-
+import { useUiStore } from "@/stores/uiStore";
 interface SelectedImage {
   file: File;
   previewUrl: string;
@@ -14,6 +14,7 @@ export default function MainPage() {
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { setKeyboardOpen, isKeyboardOpen } = useUiStore();
 
   // 'initial': 초기 환영 메시지 화면
   // 'result': AI 결과 박스 + 버튼 화면
@@ -21,6 +22,8 @@ export default function MainPage() {
   
   // AI가 생성한 리뷰 텍스트를 저장할 상태
   const [generatedReview, setGeneratedReview] = useState("");
+
+  
 
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -243,11 +246,13 @@ export default function MainPage() {
         {/* === 여기까지 조건부 렌더링 === */}
 
 
-        {/*프롬포트 입력창 (이 하단 영역은 동일)*/}
-        <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[40vh]">
+        {/*프롬포트 입력창 */}
+        <div className={`w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between ${isKeyboardOpen ? 'h-[50vh]' : 'h-[40vh]'}`}>
           <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            onFocus={() => setKeyboardOpen(true)} // 키보드 열림
+            onBlur={() => setKeyboardOpen(false)}  // 키보드 닫힘
             placeholder={
               viewMode === 'result'
                 ? "추가 코멘트를 입력해주세요"
@@ -282,7 +287,7 @@ export default function MainPage() {
           <div className="relative mt-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-[100px] left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100"
+              className={`absolute left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100 ${isKeyboardOpen ? 'bottom-[30px]' : 'bottom-[100px]'}`}
             >
               <Image
                 src="/assets/icons/camera.svg"

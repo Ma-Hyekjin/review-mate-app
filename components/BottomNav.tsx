@@ -4,6 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUiStore } from "@/stores/uiStore";
 
 // 네비게이션 아이템 데이터
 const navItems = [
@@ -27,9 +28,10 @@ const navItems = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { isKeyboardOpen } = useUiStore();
 
   return (
-    <nav className="fixed bottom-0 left-0 z-30 w-full bg-background dark:border-gray-8">
+    <nav className={`fixed bottom-0 left-0 z-30 w-full bg-background dark:border-gray-8 ${isKeyboardOpen ? 'hidden' : ''}`}>
       <div className="mx-auto flex h-20 max-w-md justify-around">
         {navItems.map((item) => {
           const isActive =
