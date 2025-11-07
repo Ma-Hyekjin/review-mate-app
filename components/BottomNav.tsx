@@ -33,7 +33,7 @@ export default function BottomNav() {
   return (
     // 3. (수정됨) 백틱(``)과 JS 변수를 사용해 'hidden' 클래스 적용
     <nav 
-      className={`fixed bottom-0 left-0 z-30 w-full bg-background dark:border-gray-8 ${isKeyboardOpen ? 'hidden' : ''}`}
+      className={`fixed bottom-0 left-0 z-30 w-full bg-transparent dark:border-gray-8 ${isKeyboardOpen ? 'hidden' : ''}`}
     >
       <div className="mx-auto flex h-20 max-w-md justify-around">
         {navItems.map((item) => {

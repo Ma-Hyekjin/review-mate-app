@@ -3,7 +3,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Spoqa Han Sans Neo 웹 폰트는 layout.tsx의 <link> 태그로 로드하므로 @font-face 불필요 */
+html, body, #__next {
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* 스크롤바 숨김 */
+  position: fixed; /* 화면 고정 */
+}
 
 @layer base {
   :root { /* 라이트 모드 변수 */
