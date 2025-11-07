@@ -4,6 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useUiStore } from "@/stores/uiStore";
 
 // 네비게이션 아이템 데이터
 const navItems = [
@@ -27,9 +28,13 @@ const navItems = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { isKeyboardOpen } = useUiStore(); // 2. 키보드 상태 가져오기
 
   return (
-    <nav className="fixed bottom-0 left-0 z-30 w-full bg-background dark:border-gray-8">
+    // 3. (수정됨) 백틱(``)과 JS 변수를 사용해 'hidden' 클래스 적용
+    <nav 
+      className={`fixed bottom-0 left-0 z-30 w-full bg-background dark:border-gray-8 ${isKeyboardOpen ? 'hidden' : ''}`}
+    >
       <div className="mx-auto flex h-20 max-w-md justify-around">
         {navItems.map((item) => {
           const isActive =

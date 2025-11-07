@@ -3,6 +3,8 @@
 
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { useUiStore } from "@/stores/uiStore"; 
+
 interface SelectedImage {
   file: File;
   previewUrl: string;
@@ -13,16 +15,11 @@ export default function MainPage() {
   const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // 'initial': 초기 환영 메시지 화면
-  // 'result': AI 결과 박스 + 버튼 화면
   const [viewMode, setViewMode] = useState<'initial' | 'result'>('initial');
-  
-  // AI가 생성한 리뷰 텍스트를 저장할 상태
   const [generatedReview, setGeneratedReview] = useState("");
 
-  
-
+  // 2. (추가) Zustand 훅 연결 (setKeyboardOpen만 필요)
+  const { setKeyboardOpen } = useUiStore();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -38,76 +35,46 @@ export default function MainPage() {
     setSelectedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  /**
-   * '생성하기' / '재생성하기' 버튼 클릭 시 실행
-   * (현재: 더미 데이터로 프론트엔드 UI 테스트)
-   */
   const handleGenerateClick = async () => {
-    // 1. 입력값이 없으면 실행 방지
+    // (더미 데이터 버전)
     if (inputText.trim() === "" || isLoading) {
       if (!isLoading) alert("생성할 키워드를 입력해주세요!");
       return; 
     }
-
-    // 2. 로딩 시작
     setIsLoading(true); 
-
-    // 3. '더미 데이터'를 사용한 프론트엔드 테스트 로직
-    // (1초간 '생성 중...'을 보여주기 위한 가짜 지연)
     setTimeout(() => {
-      // 3-1. AI가 생성했다고 가정한 더미 텍스트
       setGeneratedReview(
-        "AI가 생성한 더미 리뷰입니다.\n" +
-        `입력된 키워드: ${inputText}\n` +
-        "이 식당은 정말 멋진 분위기와 맛있는 커피를 제공합니다. [장소: 강남역 스타벅스]"
+        "AI가 생성한 더미 리뷰입니다.\n" + `입력된 키워드: ${inputText}`
       );
-      
-      // 3-2. '결과' 뷰 모드로 전환
       setViewMode('result');
-
-      // 기존 입력창의 텍스트를 비웁니다.
       setInputText("");
-      
-      // 3-3. 로딩 종료
       setIsLoading(false);
     }, 1000); 
   };
 
-  /**
-   * '복사' 버튼 클릭 시 실행
-   */
   const handleCopyClick = () => {
-    if (!generatedReview) return; // 복사할 내용이 없으면 중단
-
+    if (!generatedReview) return; 
     navigator.clipboard.writeText(generatedReview)
-      .then(() => {
-        alert('리뷰가 클립보드에 복사되었습니다!');
-      })
-      .catch(err => {
-        console.error('클립보드 복사 실패:', err);
-        alert('복사에 실패했습니다.');
-      });
+      .then(() => alert('리뷰가 클립보드에 복사되었습니다!'))
+      .catch(err => alert('복사에 실패했습니다.'));
   };
 
-  /**
-   * '초기화' 버튼 클릭 시 실행
-   */
   const handleResetClick = () => {
-    // 모든 state를 초기 상태로 되돌립니다.
     setInputText("");
     setSelectedImages([]);
     setGeneratedReview("");
-    setViewMode('initial'); // '초기' 뷰로 전환
+    setViewMode('initial'); 
   };
 
 
   return (
-    <>
+    <> 
+      {/* 3. (수정) "flex min-h-[...]"로 전체 화면 높이 사용 */}
       <div className="flex min-h-[calc(100vh-8.5rem)] flex-col justify-between w-full">
         
         {/* === 상단 뷰: 조건부 렌더링 === */}
         {viewMode === 'initial' ? (
-          // 1. 'initial' 상태일 때 (기존 환영 메시지)
+          // (생략 없음) 'initial' 상태일 때 (기존 환영 메시지)
           <div className="flex flex-col items-center gap-20 pt-20 text-center">
             <h1 className="text-title-md font-bold">
               <span className="bg-gradient-light bg-clip-text text-transparent">
@@ -119,9 +86,8 @@ export default function MainPage() {
             </p>
           </div>
         ) : (
-          // 2. 'result' 상태일 때 (새로운 결과 UI)
+          // (생략 없음) 'result' 상태일 때 (새로운 결과 UI)
           <div className="pt-20 px-5"> 
-            
             {/* AI 리뷰 결과 박스 */}
             <div 
               style={{
@@ -133,14 +99,13 @@ export default function MainPage() {
                 overflowY: 'auto',
                 margin: '0 auto',
                 whiteSpace: 'pre-wrap',
-                // --- (여기가 요청하신 스타일입니다) ---
                 fontFamily: '"Spoqa Han Sans Neo", sans-serif',
                 fontWeight: 400,
                 fontSize: 14,
                 lineHeight: '150%',
                 letterSpacing: '0px',
                 background: '#FFFFFF', 
-                color: '#12121E', // var(--gery10)
+                color: '#12121E',
               }}
             >
               {generatedReview}
@@ -201,7 +166,7 @@ export default function MainPage() {
                     cursor: 'pointer',
                     display: 'flex', alignItems: 'center', 
                     justifyContent: 'center',
-                    gap: 0, // (아이콘과 텍스트 간격)
+                    gap: 4,
                     fontFamily: '"Spoqa Han Sans Neo", sans-serif',
                     fontWeight: 500,
                     fontSize: 16,
@@ -213,8 +178,8 @@ export default function MainPage() {
                 >
                   <Image
                     src="/assets/icons/share.svg"
-                    width={26} 
-                    height={26}
+                    width={16} 
+                    height={16}
                     alt="공유"
                   />
                   공유
@@ -231,7 +196,7 @@ export default function MainPage() {
                   fontWeight: 500,
                   fontSize: 16,
                   lineHeight: '150%',
-                  background: '#A9A9B0', // var(--gery5)
+                  background: '#A9A9B0',
                   color: 'white', 
                   border: 'none',
                 }}
@@ -241,14 +206,21 @@ export default function MainPage() {
             </div>
           </div>
         )}
-        {/* === 여기까지 조건부 렌더링 === */}
-
-
-        {/*프롬포트 입력창 */}
-        <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[40vh]">
+        
+        {/* --- ⬇️ 4. (수정) "스크롤되는" 프롬포트창 --- */}
+        {/* h-[40vh]를 제거하고, flex-grow로 남은 공간을 채웁니다.
+          pb-[300px]을 줘서, 하단의 "고정된" 버튼들에 
+          내용이 가려지지 않도록 공간을 확보합니다.
+        */}
+        <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between flex-grow pb-[300px]">
+          
           <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
+            // --- ⬇️ (추가) Zustand 연결 ---
+            onFocus={() => setKeyboardOpen(true)} // BottomNav 숨기기 신호
+            onBlur={() => setKeyboardOpen(false)}  // BottomNav 보이기 신호
+            // --- ⬆️ (여기까지) ---
             placeholder={
               viewMode === 'result'
                 ? "추가 코멘트를 입력해주세요"
@@ -257,6 +229,8 @@ export default function MainPage() {
             rows={5}
             className="w-full resize-none border-none bg-transparent p-2 text-caption text-gray-6 placeholder-gray-4 focus:outline-none focus:ring-0 dark:text-gray-3 dark:placeholder-gray-4 flex-grow"
           />
+          
+          {/* (생략 없음) 이미지 프리뷰 */}
           {selectedImages.length > 0 && (
             <div className="my-2 flex space-x-2 overflow-x-auto p-1">
               {selectedImages.map((image, index) => (
@@ -273,55 +247,84 @@ export default function MainPage() {
                     className="absolute -right-1 -top-1 rounded-full bg-white text-gray-700"
                   >
                     <svg xmlns="http://www.w_3_org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5_354 4_646a_5_5 0 1 0-_708_708L7_293 8l-2_647 2_646a_5_5 0 0 0 _708_708L8 8_707l2_646 2_647a_5_5 0 0 0 _708-_708L8_707 8l2_647-2_646a_5_5 0 0 0-_708-_708L8 7_293 5_354 4_646z"/>
+                      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
                     </svg>
                   </button>
                 </div>
               ))}
             </div>
           )}
-          <div className="relative mt-2">
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-[100px] left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100"
-            >
-              <Image
-                src="/assets/icons/camera.svg"
-                width={22}
-                height={18}
-                alt="사진첨부"
-              />
-              사진첨부
-            </button>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              className="hidden"
-            />
 
-            {/* '생성하기' 버튼 */}
-            <button
-              onClick={handleGenerateClick}
-              disabled={isLoading}
-              className="absolute bottom-[30px] right-[20px] flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2"
-              style={{
-                width: viewMode === 'result' ? 121 : 110,
-              }}
-            >
-              <Image
-                src="/assets/icons/generate.svg"
-                width={20}
-                height={20}
-                alt={viewMode === 'result' ? '재생성하기' : '생성하기'}
-              />
-              {/* 텍스트도 state에 따라 동적으로 변경 */}
-              {isLoading ? '생성 중...' : (viewMode === 'result' ? '재생성하기' : '생성하기')}
-            </button>
-            
-          </div>
+          {/* 🚨 버튼 컨테이너를 이 div에서 삭제했습니다! 🚨 */}
+          
+        </div>
+        {/* --- ⬆️ (여기까지가 스크롤되는 영역) --- */}
+
+      </div>
+
+      {/* --- ⬇️ 5. (추가) "항상 고정된" 버튼 컨테이너 --- */}
+      {/* 이 <div>는 position: fixed 이고 "항상 보입니다". 
+        z-20 이라서 z-30인 BottomNav "아래"에 배치됩니다. 
+        BottomNav가 켜져 있을 때는 이 버튼들이 가려집니다. (키보드 닫혔을 때)
+        BottomNav가 숨겨지면 이 버튼들이 보입니다. (키보드 열렸을 때)
+        ...가 아니라, 키보드가 열리면 BottomNav와 이 div 둘 다
+        "찌그러든 화면의 새 바닥"을 기준으로 위치를 잡으려 할 겁니다.
+        
+        [이전 설명 수정]
+        BottomNav(z-30)와 이 Button Container(z-20)는 
+        "키보드가 닫혔을 때" 겹칩니다. 
+        "키보드가 열렸을 때"는 BottomNav는 숨겨지고, 
+        이 Button Container는 님이 원하신 "그 자리 그 곳에" (바닥 기준 214/259px) 
+        "고정"되어 키보드에 "가려지게" 됩니다.
+      */}
+      <div 
+        className="fixed bottom-0 left-0 right-0 z-20 w-full max-w-md mx-auto pointer-events-none" 
+        style={{ height: '300px' }} // Figma 기준 버튼 영역 높이
+      > 
+        {/* p-6 (패딩)을 추가하면 left: 25px가 아니라 
+          패딩 기준으로 정렬해야 하므로, p-6 대신 
+          정확한 Figma 픽셀 값으로 제어하기 위해 
+          w-full h-full relative div를 사용합니다.
+        */}
+        <div className="relative w-full h-full">
+          
+          {/* 사진첨부 버튼 (Figma 스펙 적용) */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100 pointer-events-auto"
+            style={{
+              left: 25,
+              bottom: 259, // 👈 Figma 스펙: 바닥에서 259px
+            }}
+          >
+            <Image
+              src="/assets/icons/camera.svg"
+              width={22}
+              height={18}
+              alt="사진첨부"
+            />
+            사진첨부
+          </button>
+          
+          {/* 생성하기 버튼 (Figma 스펙 적용) */}
+          <button
+            onClick={handleGenerateClick}
+            disabled={isLoading}
+            className="absolute flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2 pointer-events-auto"
+            style={{
+              right: 16, // 👈 Figma 스펙: 우측에서 16px
+              bottom: 214, // 👈 Figma 스펙: 바닥에서 214px
+              width: viewMode === 'result' ? 121 : 110,
+            }}
+          >
+            <Image
+              src="/assets/icons/generate.svg"
+              width={20}
+              height={20}
+              alt={viewMode === 'result' ? '재생성하기' : '생성하기'}
+            />
+            {isLoading ? '생성 중...' : (viewMode === 'result' ? '재생성하기' : '생성하기')}
+          </button>
         </div>
       </div>
     </>
