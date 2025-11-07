@@ -247,7 +247,7 @@ export default function MainPage() {
 
 
         {/*프롬포트 입력창 */}
-        <div className={`w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between ${isKeyboardOpen ? 'h-[50vh]' : 'h-[40vh]'}`}>
+        <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[40vh]">
           <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
@@ -287,7 +287,7 @@ export default function MainPage() {
           <div className="relative mt-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className={`absolute left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100 ${isKeyboardOpen ? 'bottom-[30px]' : 'bottom-[100px]'}`}
+              className={`absolute left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100 ${isKeyboardOpen ? 'bottom-[0px]' : 'bottom-[100px]'}`}
             >
               <Image
                 src="/assets/icons/camera.svg"
