@@ -287,7 +287,7 @@ export default function MainPage() {
           <div className="relative mt-2">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className={`absolute left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100 ${isKeyboardOpen ? 'bottom-[0px]' : 'bottom-[100px]'}`}
+              className="absolute bottom-[100px] left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100"
             >
               <Image
                 src="/assets/icons/camera.svg"
@@ -311,7 +311,6 @@ export default function MainPage() {
               onClick={handleGenerateClick}
               disabled={isLoading}
               className="absolute bottom-[30px] right-[20px] flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2"
-              // width를 state에 따라 동적으로 변경
               style={{
                 width: viewMode === 'result' ? 121 : 110,
               }}
