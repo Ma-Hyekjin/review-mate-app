@@ -17,7 +17,7 @@ export default function MainPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'initial' | 'result'>('initial');
   const [generatedReview, setGeneratedReview] = useState("");
-  const { setKeyboardOpen } = useUiStore();
+  const { setKeyboardOpen, isKeyboardOpen } = useUiStore();
 
   // --- ⬇️ (기존 함수들) ---
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,7 +256,8 @@ export default function MainPage() {
           {/* 사진첨부 버튼 */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="absolute top-[91px] left-[20px] flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition hover:bg-blue-light-100"
+            className={`
+              absolute flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition-all duration-300 hover:bg-blue-light-100 left-[20px] ${isKeyboardOpen ? 'top-[25%]' : 'top-[25%]'}`}
           >
             <Image
               src="/assets/icons/camera.svg"
@@ -271,7 +272,7 @@ export default function MainPage() {
           <button
             onClick={handleGenerateClick}
             disabled={isLoading}
-            className="absolute top-[174px] right-[20px] flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2"
+            className={`absolute flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition-all duration-300 hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2 right-[16px] ${isKeyboardOpen ? 'top-[25%]' : 'top-[43%]'}`}
             style={{
               width: viewMode === 'result' ? 121 : 110,
             }}
