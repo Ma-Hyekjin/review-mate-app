@@ -257,7 +257,7 @@ export default function MainPage() {
           <button
             onClick={() => fileInputRef.current?.click()}
             className={`
-              absolute flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition-all duration-300 hover:bg-blue-light-100 left-[20px] ${isKeyboardOpen ? 'top-[55%]' : 'top-[25%]'}`}
+              absolute flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition-all duration-300 hover:bg-blue-light-100 left-[20px] ${isKeyboardOpen ? 'top-[50%]' : 'top-[25%]'}`}
           >
             <Image
               src="/assets/icons/camera.svg"
@@ -272,7 +272,7 @@ export default function MainPage() {
           <button
             onClick={handleGenerateClick}
             disabled={isLoading}
-            className={`absolute flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition-all duration-300 hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2 right-[16px] ${isKeyboardOpen ? 'top-[55%]' : 'top-[43%]'}`}
+            className={`absolute flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition-all duration-300 hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2 right-[16px] ${isKeyboardOpen ? 'top-[50%]' : 'top-[43%]'}`}
             style={{
               width: viewMode === 'result' ? 121 : 110,
             }}
