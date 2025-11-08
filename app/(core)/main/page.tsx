@@ -19,15 +19,20 @@ export default function MainPage() {
   const [generatedReview, setGeneratedReview] = useState("");
   const { setKeyboardOpen, isKeyboardOpen } = useUiStore();
 
-  // --- ⬇️ (기존 함수들) ---
+  // --- 함수 ---
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const filesArray = Array.from(e.target.files).map((file) => ({
+    if (e.target.files && e.target.files.length > 0) {
+      // 선택된 파일 중 첫 번째 파일만 사용합니다.
+      const file = e.target.files[0];
+      const selectedImage = {
         file,
         previewUrl: URL.createObjectURL(file),
-      }));
-      setSelectedImages((prev) => [...prev, ...filesArray]);
+      };
+      // 기존 배열을 덮어쓰고, 새 파일만 포함하도록 설정합니다. (하나만 유지)
+      setSelectedImages([selectedImage]);
     }
+    // 파일을 선택한 후 input의 value를 초기화해야 같은 파일을 연속으로 선택해도 onChange가 다시 발생.
+    if (e.target.files) e.target.value = ''; 
   };
 
   const removeImage = (index: number) => {
@@ -70,18 +75,17 @@ export default function MainPage() {
   return (
     <div className="flex flex-col w-full h-screen">
 
-      {/* --- 1. 숨겨진 파일 입력 필드 --- */}
+      {/* --- 파일 입력 필드 --- */}
       <input
         type="file"
         ref={fileInputRef}
         onChange={handleImageChange}
         className="hidden" // 화면에 보이지 않도록 숨김
-        multiple // 여러 파일 선택 가능하도록 설정
         accept="image/*" // 이미지 파일만 선택 가능하도록 설정
       />
-      {/* --- 숨겨진 파일 입력 필드 끝 --- */}
+      {/* --- 파일 입력 필드 --- */}
       
-      {/* --- 2. "스크롤되는 컨텐츠 영역" --- */}
+      {/* --- 스크롤되는 컨텐츠 영역 --- */}
       <div className="flex-1 overflow-y-auto pb-[119px]"> 
         
         {/* === 상단 뷰: 조건부 렌더링 === */}
@@ -97,7 +101,6 @@ export default function MainPage() {
             </p>
           </div>
         ) : (
-          // 'result' 상태일 때 (새로운 결과 UI)
           <div className="pt-20 px-5"> 
             {/* AI 리뷰 결과 박스 */}
             <div 
@@ -218,9 +221,9 @@ export default function MainPage() {
           </div>
         )}
       </div>
-      {/* --- ⬆️ (여기까지 스크롤 영역) --- */}
+      {/* --- 스크롤 영역 --- */}
       
-      {/* --- ⬇️ 3. "하단 고정" 프롬포트창 --- */}
+      {/* --- 하단 고정 프롬포트창 --- */}
       <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[65vh] flex-shrink-0 relative">
         
         <textarea
@@ -236,33 +239,33 @@ export default function MainPage() {
           rows={2}
           className="w-full resize-none border-none bg-transparent p-2 text-caption text-gray-6 placeholder-gray-4 focus:outline-none focus:ring-0 dark:text-gray-3 dark:placeholder-gray-4"
         />
-        
-        {selectedImages.length > 0 && (
-          <div className="my-2 flex space-x-2 overflow-x-auto p-1">
-            {selectedImages.map((image, index) => (
-              <div key={index} className="relative shrink-0">
+
+      {selectedImages.length > 0 && (
+          <div 
+            className="absolute left-[20px] z-10"
+            style={{top: '40%',}}
+            >
+            <div className="flex space-x-2 p-1">
+              <div key={0} className="relative shrink-0">
                 <Image
-                  src={image.previewUrl}
-                  alt={`preview ${index}`}
+                  src={selectedImages[0].previewUrl}
+                  alt={`preview 0`}
                   width={80}
                   height={80}
                   className="h-20 w-20 rounded-md object-cover"
-                />
+                  />
                 <button
-                  onClick={() => removeImage(index)}
-                  className="absolute -right-1 -top-1 rounded-full bg-white text-gray-700"
-                >
+                  onClick={() => removeImage(0)} 
+                  className="absolute -right-1 -top-1 rounded-full bg-gray-1 text-gray-700 p-0.5 border border-gray-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293 5.354 4.646z"/>
                   </svg>
                 </button>
               </div>
-            ))}
+            </div>
           </div>
         )}
-
         {/* ---  버튼 컨테이너 --- */}
-        <div className="mt-2 h-[214px]" /> 
           
           {/* 사진첨부 버튼 */}
           <button
@@ -276,7 +279,6 @@ export default function MainPage() {
             />
             사진첨부
           </button>
-
           {/* 생성하기 버튼 */}
           <button
             onClick={handleGenerateClick}
@@ -295,7 +297,7 @@ export default function MainPage() {
             {isLoading ? '생성 중...' : (viewMode === 'result' ? '재생성하기' : '생성하기')}
           </button>
       </div>
-      {/* --- 여기까지 하단 고정 영역 --- */}
+      {/* --- 하단 고정 영역 --- */}
 
     </div>
   );
