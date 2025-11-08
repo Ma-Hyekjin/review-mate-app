@@ -75,7 +75,7 @@ export default function MainPage() {
         
         {/* === 상단 뷰: 조건부 렌더링 === */}
         {viewMode === 'initial' ? (
-          <div className="flex flex-col items-center gap-[4vh] pt-[12vh] text-center">
+          <div className="flex flex-col items-center gap-12 pt-16 text-center">
             <h1 className="text-title-md font-bold">
               <span className="bg-gradient-light bg-clip-text text-transparent">
                 만나서 반가워요!
