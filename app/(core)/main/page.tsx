@@ -68,14 +68,14 @@ export default function MainPage() {
 
 
   return (
-    <div className="flex flex-col justify-between w-full h-full">
+    <div className="flex flex-col w-full h-screen">
       
       {/* --- ⬇️ 2. "스크롤되는 컨텐츠 영역" --- */}
       <div className="flex-1 overflow-y-auto pb-[119px]"> 
         
         {/* === 상단 뷰: 조건부 렌더링 === */}
         {viewMode === 'initial' ? (
-          <div className="flex flex-col items-center gap-15 pt-15 text-center">
+          <div className="flex flex-col items-center gap-16 pt-16 text-center">
             <h1 className="text-title-md font-bold">
               <span className="bg-gradient-light bg-clip-text text-transparent">
                 만나서 반가워요!
@@ -210,7 +210,7 @@ export default function MainPage() {
       {/* --- ⬆️ (여기까지 스크롤 영역) --- */}
       
       {/* --- ⬇️ 3. "하단 고정" 프롬포트창 --- */}
-      <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[60vh] flex-shrink-0">
+      <div className="w-full rounded-t-3xl border-t border-blue-light-200 bg-background p-6 shadow-[0px_4px_15px_blue-light-200] flex flex-col justify-between h-[65vh] flex-shrink-0 relative">
         
         <textarea
           value={inputText}
@@ -222,8 +222,8 @@ export default function MainPage() {
               ? "추가 코멘트를 입력해주세요"
               : "강남역, 분위기 좋은, 산미가 있는 커피"
           }
-          rows={5}
-          className="w-full resize-none border-none bg-transparent p-2 text-caption text-gray-6 placeholder-gray-4 focus:outline-none focus:ring-0 dark:text-gray-3 dark:placeholder-gray-4 flex-grow"
+          rows={2}
+          className="w-full resize-none border-none bg-transparent p-2 text-caption text-gray-6 placeholder-gray-4 focus:outline-none focus:ring-0 dark:text-gray-3 dark:placeholder-gray-4"
         />
         
         {selectedImages.length > 0 && (
@@ -251,7 +251,7 @@ export default function MainPage() {
         )}
 
         {/* ---  버튼 컨테이너 --- */}
-        <div className="relative mt-2 h-[214px]"> 
+        <div className="mt-2 h-[214px]" /> 
           
           {/* 사진첨부 버튼 */}
           <button
@@ -271,7 +271,7 @@ export default function MainPage() {
           <button
             onClick={handleGenerateClick}
             disabled={isLoading}
-            className="absolute top-[164px] right-[20px] flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2"
+            className="absolute top-[174px] right-[20px] flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2"
             style={{
               width: viewMode === 'result' ? 121 : 110,
             }}
@@ -284,7 +284,6 @@ export default function MainPage() {
             />
             {isLoading ? '생성 중...' : (viewMode === 'result' ? '재생성하기' : '생성하기')}
           </button>
-        </div>
       </div>
       {/* --- 여기까지 하단 고정 영역 --- */}
 
