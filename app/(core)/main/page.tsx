@@ -272,7 +272,7 @@ export default function MainPage() {
           <button
             onClick={handleGenerateClick}
             disabled={isLoading}
-            className={`absolute flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition-all duration-300 hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2 right-[16px] ${isKeyboardOpen ? 'top-[25%]' : 'top-[43%]'}`}
+            className={`absolute flex h-[50px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-blue-light-100 text-caption font-medium text-primary-light transition-all duration-300 hover:bg-blue-light-200 disabled:opacity-70 disabled:bg-gray-2 right-[16px] ${isKeyboardOpen ? 'top-[35%]' : 'top-[43%]'}`}
             style={{
               width: viewMode === 'result' ? 121 : 110,
             }}
