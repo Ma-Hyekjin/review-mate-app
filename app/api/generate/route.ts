@@ -1,3 +1,4 @@
+// app/api/generate/route.ts
 import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
 
