@@ -69,8 +69,19 @@ export default function MainPage() {
 
   return (
     <div className="flex flex-col w-full h-screen">
+
+      {/* --- 1. 숨겨진 파일 입력 필드 --- */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleImageChange}
+        className="hidden" // 화면에 보이지 않도록 숨김
+        multiple // 여러 파일 선택 가능하도록 설정
+        accept="image/*" // 이미지 파일만 선택 가능하도록 설정
+      />
+      {/* --- 숨겨진 파일 입력 필드 끝 --- */}
       
-      {/* --- ⬇️ 2. "스크롤되는 컨텐츠 영역" --- */}
+      {/* --- 2. "스크롤되는 컨텐츠 영역" --- */}
       <div className="flex-1 overflow-y-auto pb-[119px]"> 
         
         {/* === 상단 뷰: 조건부 렌더링 === */}
@@ -256,9 +267,7 @@ export default function MainPage() {
           {/* 사진첨부 버튼 */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className={`
-              absolute flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition-all duration-300 hover:bg-blue-light-100 left-[20px] ${isKeyboardOpen ? 'top-[50%]' : 'top-[25%]'}`}
-          >
+            className={`absolute flex h-[50px] w-[108px] items-center justify-center gap-2 rounded-[100px] border border-blue-light-100 bg-background text-caption font-medium text-gray-3 transition-all duration-300 hover:bg-blue-light-100 left-[20px] ${isKeyboardOpen ? 'top-[50%]' : 'top-[25%]'}`}>
             <Image
               src="/assets/icons/camera.svg"
               width={22}
