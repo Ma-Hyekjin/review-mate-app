@@ -1,9 +1,8 @@
+// app/(auth)/quick-pick/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-// Fa... 아이콘들은 다른 단계에서 필요하므로 일단 유지합니다.
-import { FaChild, FaUser, FaUserTie, FaUserGraduate, FaRegUserCircle } from "react-icons/fa";
 
 type Step = "gender" | "age" | "personality" | "name" | "confirm" | "details" ;
 const STEPS: Step[] = ["gender", "age", "personality", "name", "confirm", "details"]; // 진행 바 계산용
@@ -72,17 +71,83 @@ export default function QuickPickPage() {
   };
 
   // 👇 [추가] 'details' 단계(저장하기)에서 'final' 단계로 이동
-  const handleSaveAndFinish = () => {
-    // TODO: [DB] 여기서 personaInfo (details 포함)를 DB에 저장
-    console.log("최종 페르소나 (Details 포함):", personaInfo);
-    router.push("/quick-pick/complete");
+  const handleSaveAndFinish = async () => {
+    // 1. 저장할 데이터 준비
+    const { name, details, ...personaWithoutDetails } = personaInfo;
+    
+    // name과 details를 포함하여 모든 정보를 JSON 문자열로 직렬화
+    const personaData = { 
+        ...personaWithoutDetails, 
+        details: details.filter(d => d.trim() !== ""), // 빈 텍스트 제거
+    };
+
+    const finalPersonaJson = JSON.stringify(personaData);
+
+    try {
+        // 2. API 호출
+        const response = await fetch('/api/mate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                personaJson: finalPersonaJson,
+            }),
+        });
+
+        if (!response.ok) {
+            // 서버 오류 처리
+            throw new Error('메이트 저장에 실패했습니다.');
+        }
+
+        // 3. 성공 시 리디렉션
+        console.log("메이트 저장 성공!");
+        router.push("/quick-pick/complete"); // 완료 페이지로 이동
+
+    } catch (error) {
+        alert("메이트 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        console.error(error);
+    }
   };
 
   // 👇 [추가] 'details' 단계(건너뛰기)에서 'final' 단계로 이동
-  const handleSkipAndFinish = () => {
-    // TODO: [DB] 여기서 personaInfo (details 제외)를 DB에 저장
-    console.log("최종 페르소나 (Details 제외):", personaInfo);
-    router.push("/quick-pick/complete");
+  const handleSkipAndFinish = async () => {
+    // 1. 저장할 데이터 준비 (Details만 빈 배열로 저장)
+    const { name, details, ...personaWithoutDetails } = personaInfo;
+    
+    const personaData = { 
+        ...personaWithoutDetails, 
+        details: [], // Details는 빈 배열로 저장
+    };
+    
+    const finalPersonaJson = JSON.stringify(personaData);
+
+    try {
+        // 2. API 호출
+        const response = await fetch('/api/mate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: name,
+                personaJson: finalPersonaJson,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error('메이트 저장에 실패했습니다.');
+        }
+
+        // 3. 성공 시 리디렉션
+        console.log("메이트 저장 성공 (건너뛰기).");
+        router.push("/quick-pick/complete"); // 완료 페이지로 이동
+
+    } catch (error) {
+        alert("메이트 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        console.error(error);
+    }
   };
 
   const handleConfirm = () => {
@@ -182,8 +247,6 @@ export default function QuickPickPage() {
             { key: 't', value: 'T' }, { key: 'f', value: 'F' }, // 3행
             { key: 'j', value: 'J' }, { key: 'p', value: 'P' }, // 4행
           ];
-          // 다음 버튼 활성화 조건 (4개 모두 선택되었는지 확인)
-          const isAllSelected = Object.values(personaInfo.personality).filter(v => v !== "").length === 4;
   
           return (
             <>
