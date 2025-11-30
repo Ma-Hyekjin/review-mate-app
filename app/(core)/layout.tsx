@@ -1,6 +1,6 @@
 // app/(core)/layout.tsx
-import BottomNav from "@/components/BottomNav";
-import TopNav from "@/components/TopNav";
+import BottomNav from "@/components/layout/BottomNav";
+import TopNav from "@/components/layout/TopNav";
 
 export default function CoreLayout({
   children,

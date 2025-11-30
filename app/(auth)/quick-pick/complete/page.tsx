@@ -4,8 +4,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-
-const LOGO_PATH = "/assets/logos/review-mate-app-logo-gradient.svg";
+import { ASSETS, ROUTES } from '@/constants';
 
 export default function QuickPickCompletePage() {
   const router = useRouter();
@@ -24,7 +23,7 @@ export default function QuickPickCompletePage() {
 
     // 3. (2.5초 후) 메인 페이지로 이동
     const redirectTimer = setTimeout(() => {
-      router.push("/main");
+      router.push(ROUTES.MAIN);
     }, 2500);
 
     return () => {
@@ -42,7 +41,7 @@ export default function QuickPickCompletePage() {
         {/* === 1. 배경 로고 (z-0) === */}
         <div className="absolute top-[15vh] left-0 w-full z-0 opacity-90 flex justify-center">
           <Image
-            src={LOGO_PATH}
+            src={ASSETS.LOGO_GRADIENT}
             width={468}
             height={361}
             alt="리뷰메이트 로고 배경"

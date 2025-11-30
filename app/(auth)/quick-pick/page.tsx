@@ -3,9 +3,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import type { QuickPickStep } from '@/types';
+import { ROUTES, API_ENDPOINTS } from '@/constants';
+import { validateMateName } from '@/utils/validation';
+import { showError } from '@/utils/toast';
+import { logInfo, logError } from '@/lib/logger';
+import { apiClient } from '@/lib/api-client';
+import type { CreateMateRequest, CreateMateResponse, ApiResponse } from '@/types/api';
 
-type Step = "gender" | "age" | "personality" | "name" | "confirm" | "details" ;
-const STEPS: Step[] = ["gender", "age", "personality", "name", "confirm", "details"]; // 진행 바 계산용
+const STEPS: QuickPickStep[] = ["gender", "age", "personality", "name", "confirm", "details"]; // 진행 바 계산용
 
 const initialPersonaInfo = {
   gender: "",
@@ -18,7 +24,7 @@ const initialPersonaInfo = {
 export default function QuickPickPage() {
   const router = useRouter();
   
-  const [currentStep, setCurrentStep] = useState<Step>("gender");
+  const [currentStep, setCurrentStep] = useState<QuickPickStep>("gender");
   const [personaInfo, setPersonaInfo] = useState(initialPersonaInfo);
 
   // --- 기존 핸들러 함수들은 그대로 유지 ---
@@ -51,10 +57,10 @@ export default function QuickPickPage() {
   const goToConfirmStep = () => {
     // 이름이 비어있으면 "메이트"로, 아니면 입력값으로
     const finalName = personaInfo.name.trim() === "" ? "메이트" : personaInfo.name.trim();
-    const nameRegex = /^[a-zA-Z가-힣0-9-_.]{1,}$/;
+    const validation = validateMateName(finalName);
     
-    if (!nameRegex.test(finalName)) {
-      alert("이름은 1글자 이상의 한글, 영문, 숫자 또는 '-', '_', '.'만 사용할 수 있습니다.");
+    if (!validation.valid) {
+      showError(validation.error || "이름이 유효하지 않습니다.");
       return;
     }
     setPersonaInfo(prev => ({ ...prev, name: finalName }));
@@ -85,29 +91,21 @@ export default function QuickPickPage() {
 
     try {
         // 2. API 호출
-        const response = await fetch('/api/mate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        await apiClient.post<ApiResponse<CreateMateResponse>>(
+            API_ENDPOINTS.MATE,
+            {
                 name: name,
                 personaJson: finalPersonaJson,
-            }),
-        });
-
-        if (!response.ok) {
-            // 서버 오류 처리
-            throw new Error('메이트 저장에 실패했습니다.');
-        }
+            } as CreateMateRequest
+        );
 
         // 3. 성공 시 리디렉션
-        console.log("메이트 저장 성공!");
-        router.push("/quick-pick/complete"); // 완료 페이지로 이동
+        logInfo("메이트 저장 성공");
+        router.push(ROUTES.QUICK_PICK_COMPLETE); // 완료 페이지로 이동
 
     } catch (error) {
-        alert("메이트 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
-        console.error(error);
+        showError("메이트 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        logError("메이트 저장 실패", error);
     }
   };
 
@@ -125,28 +123,21 @@ export default function QuickPickPage() {
 
     try {
         // 2. API 호출
-        const response = await fetch('/api/mate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+        await apiClient.post<ApiResponse<CreateMateResponse>>(
+            API_ENDPOINTS.MATE,
+            {
                 name: name,
                 personaJson: finalPersonaJson,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error('메이트 저장에 실패했습니다.');
-        }
+            } as CreateMateRequest
+        );
 
         // 3. 성공 시 리디렉션
-        console.log("메이트 저장 성공 (건너뛰기).");
-        router.push("/quick-pick/complete"); // 완료 페이지로 이동
+        logInfo("메이트 저장 성공 (건너뛰기)");
+        router.push(ROUTES.QUICK_PICK_COMPLETE); // 완료 페이지로 이동
 
     } catch (error) {
-        alert("메이트 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
-        console.error(error);
+        showError("메이트 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+        logError("메이트 저장 실패 (건너뛰기)", error);
     }
   };
 

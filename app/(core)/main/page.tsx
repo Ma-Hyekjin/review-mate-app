@@ -1,78 +1,119 @@
 // app/(core)/main/page.tsx
 "use client";
 
-import { useState, useRef } from "react";
-// 분리된 컴포넌트들을 import 합니다.
-import MainInitialView from "@/components/main/MainInitialView";
-import MainResultView from "@/components/main/MainResultView";
-import MainPromptArea from "@/components/main/MainPromptArea";
-
-interface SelectedImage {
-  file: File;
-  previewUrl: string;
-}
+import { useState } from "react";
+import MainInitialView from "@/components/features/main/MainInitialView";
+import MainResultView from "@/components/features/main/MainResultView";
+import MainPromptArea from "@/components/features/main/MainPromptArea";
+import SharePopup from "@/components/features/main/SharePopup";
+import { useImageUpload, useReview, useClipboard, useMate } from "@/hooks";
+import { API_ENDPOINTS } from "@/constants";
+import { showError, showSuccess } from "@/utils/toast";
+import { logError, logInfo } from "@/lib/logger";
+import { apiClient } from "@/lib/api-client";
+import type { SaveReviewRequest, SaveReviewResponseData, ApiResponse } from "@/types/api";
 
 export default function MainPage() {
-  const [inputText, setInputText] = useState("");
-  const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [viewMode, setViewMode] = useState<'initial' | 'result'>('initial');
-  const [generatedReview, setGeneratedReview] = useState("");
-  // useUiStore는 PromptArea에서 호출합니다.
+  // 이미지 업로드 관련 훅
+  const {
+    selectedImages,
+    fileInputRef,
+    handleImageChange,
+    removeImage,
+    clearImages,
+  } = useImageUpload();
 
-  // --- 함수 ---
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      const selectedImage = {
-        file,
-        previewUrl: URL.createObjectURL(file),
-      };
-      setSelectedImages([selectedImage]);
-    }
-    if (e.target.files) e.target.value = ''; 
-  };
+  // 리뷰 생성 관련 훅
+  const {
+    inputText,
+    setInputText,
+    generatedReview,
+    isLoading,
+    viewMode,
+    generateReview,
+    resetReview,
+  } = useReview();
 
-  // [수정] 인덱스를 받는 원래 함수 로직을 유지합니다.
-  const removeImage = (index: number) => { 
-    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
-  };
+  // 클립보드 관련 훅
+  const { copyToClipboard } = useClipboard();
 
-  const handleGenerateClick = async () => {
-    if (inputText.trim() === "" || isLoading) {
-      if (!isLoading) alert("생성할 키워드를 입력해주세요!");
-      return; 
-    }
-    setIsLoading(true); 
-    
-    // (더미 데이터 유지)
-    setTimeout(() => {
-      setGeneratedReview(
-        "AI가 생성한 더미 리뷰입니다.\n" + `입력된 키워드: ${inputText}`
-      );
-      setViewMode('result');
-      setIsLoading(false);
-    }, 1000); 
+  // 메이트 정보 조회 훅
+  const { currentMate, isLoading: isMateLoading, hasMate, error: mateError, fetchMates } = useMate();
+
+  // 저장 상태
+  const [isSaving, setIsSaving] = useState(false);
+  
+  // 공유 팝업 상태
+  const [isSharePopupOpen, setIsSharePopupOpen] = useState(false);
+
+  // 핸들러 함수들
+  const handleGenerateClick = () => {
+    generateReview(inputText, currentMate?.id);
   };
 
   const handleCopyClick = () => {
-    if (!generatedReview) return; 
-    navigator.clipboard.writeText(generatedReview)
-      .then(() => alert('리뷰가 클립보드에 복사되었습니다!'))
-      .catch(error => {
-        console.error("클립보드 복사 실패:", error); 
-        alert('복사에 실패했습니다.');
-      });
+    copyToClipboard(generatedReview, "리뷰가 클립보드에 복사되었습니다!");
+  };
+
+  const handleSaveClick = async () => {
+    if (!generatedReview.trim()) {
+      showError("저장할 리뷰가 없습니다.");
+      return;
+    }
+
+    if (!currentMate) {
+      showError("메이트가 없습니다. 먼저 메이트를 생성해주세요.");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      await apiClient.post<ApiResponse<SaveReviewResponseData>>(
+        API_ENDPOINTS.REVIEWS_SAVE,
+        {
+          content: generatedReview,
+          mateId: currentMate.id,
+        } as SaveReviewRequest
+      );
+
+      showSuccess("리뷰가 저장되었습니다!");
+    } catch (error) {
+      logError("리뷰 저장 오류", error);
+      
+      const errorMessage = error instanceof Error ? error.message : "리뷰 저장에 실패했습니다.";
+      showError(errorMessage);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleShareClick = () => {
+    if (!generatedReview.trim()) {
+      showError("공유할 리뷰가 없습니다.");
+      return;
+    }
+    // 공유 팝업 열기
+    setIsSharePopupOpen(true);
+  };
+
+  const handlePlatformClick = async (platform: string) => {
+    // 먼저 클립보드에 복사
+    await copyToClipboard(generatedReview, "");
+    
+    // 플랫폼별 처리 (나중에 구현)
+    // 현재는 클립보드 복사만 수행
+    showSuccess("리뷰가 클립보드에 복사되었습니다!");
+    setIsSharePopupOpen(false);
+    
+    // TODO: 플랫폼별 링크 열기 또는 딥링크 처리
+    logInfo(`플랫폼 공유: ${platform}`);
   };
 
   const handleResetClick = () => {
-    setInputText("");
-    setSelectedImages([]);
-    setGeneratedReview("");
-    setViewMode('initial'); 
+    clearImages();
+    resetReview();
   };
-  // --- 함수 끝 ---
 
 
   return (
@@ -87,9 +128,23 @@ export default function MainPage() {
         accept="image/*"
       />
       
-      {/* --- 스크롤되는 컨텐츠 영역 --- */}
-      <div className="flex-1 overflow-y-auto pb-[119px]"> 
+      {/* --- 컨텐츠 영역 (스크롤 없음, 텍스트 박스 내부만 스크롤) --- */}
+      <div className="flex-1 overflow-hidden pb-[119px]"> 
         
+        {/* 메이트 에러 알림 */}
+        {mateError && !isMateLoading && (
+          <div className="mx-4 mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+            <p className="font-medium">메이트 정보를 불러올 수 없습니다.</p>
+            <p className="mt-1 text-xs">{mateError.message}</p>
+            <button
+              onClick={fetchMates}
+              className="mt-2 text-xs underline hover:no-underline"
+            >
+              다시 시도
+            </button>
+          </div>
+        )}
+
         {/* === 상단 뷰: 조건부 렌더링 === */}
         {viewMode === 'initial' ? (
           <MainInitialView />
@@ -97,7 +152,11 @@ export default function MainPage() {
           <MainResultView
             generatedReview={generatedReview}
             handleCopyClick={handleCopyClick}
+            handleSaveClick={handleSaveClick}
+            handleShareClick={handleShareClick}
             handleResetClick={handleResetClick}
+            isSaving={isSaving}
+            isSaveDisabled={!hasMate || !currentMate || isMateLoading}
           />
         )}
       </div>
@@ -113,6 +172,13 @@ export default function MainPage() {
         handleGenerateClick={handleGenerateClick}
         viewMode={viewMode}
         isLoading={isLoading}
+      />
+
+      {/* 공유 팝업 */}
+      <SharePopup
+        isOpen={isSharePopupOpen}
+        onClose={() => setIsSharePopupOpen(false)}
+        onPlatformClick={handlePlatformClick}
       />
 
     </div>

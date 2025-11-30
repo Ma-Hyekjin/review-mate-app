@@ -81,6 +81,7 @@ model Mate {
   id           String    @id @default(cuid())
   name         String
   personaJson  String    @map("persona_json")
+  isDefault    Boolean   @default(false) @map("is_default") // 기본 제공 메이트 여부
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   

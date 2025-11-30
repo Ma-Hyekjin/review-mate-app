@@ -1,7 +1,7 @@
 // app/(user)/notifications/page.tsx
 "use client";
 
-import SubPageHeader from "@/components/SubPageHeader";
+import SubPageHeader from "@/components/layout/SubPageHeader";
 
 // TODO: [DB] 실제 알림 데이터는 DB에서 불러와야 합니다.
 const notificationsData = [

@@ -21,22 +21,26 @@ export default async function HomePage() {
   const userId = session.user.id;
   
   try {
-    // 3. 로그인된 사용자에게 저장된 Mate 개수 확인
-    const mateCount = await db.mate.count({
-      where: { userId: userId },
+    // 3. 사용자가 생성한 메이트 확인 (기본 메이트 제외)
+    // 기본 메이트만 있고 사용자가 생성한 메이트가 없으면 퀵픽으로 이동
+    const userCreatedMateCount = await db.mate.count({
+      where: { 
+        userId: userId,
+        isDefault: false, // 기본 메이트 제외
+      },
     });
     
-    // 4. 메이트 유무에 따른 분기 처리
-    if (mateCount === 0) {
-      // 메이트가 없으면 퀵픽 페이지로 이동
+    // 4. 사용자 생성 메이트 유무에 따른 분기 처리
+    if (userCreatedMateCount === 0) {
+      // 사용자가 생성한 메이트가 없으면 퀵픽 페이지로 이동
       redirect('/quick-pick');
     } else {
-      // 메이트가 있으면 메인 페이지로 이동
+      // 사용자가 생성한 메이트가 있으면 메인 페이지로 이동
       redirect('/main');
     }
 
-  } catch (error) {
-    console.error("DB 조회 오류:", error);
+  } catch {
+    // logError("DB 조회 오류", error); // 필요시 활성화
     // 5. 오류 발생 시 임시로 로그인 페이지로 이동 (또는 오류 페이지)
     redirect('/login');
   }
