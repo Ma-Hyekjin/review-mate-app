@@ -141,13 +141,14 @@ review-mate-app/
 │                                  │  (Vercel DB) │       │
 │                                  └──────────────┘       │
 └─────────────────────────────────────────────────────────┘
+                            ↑
                             │
                             │ API Calls
-                            │◄─────────┐
-                            ▼          │
-                  ┌─────────────────┐  │
-                  │   OpenAI API    │  │
-                  │   (GPT-4o)      │──┘
+                            │
+                            ▼          
+                  ┌─────────────────┐ 
+                  │   OpenAI API    │  
+                  │   (GPT-4o)      │
                   └─────────────────┘
 ```
 
@@ -195,19 +196,13 @@ OPENAI_API_KEY="your_openai_api_key"
 # 소셜 로그인 관련 변수들 (KAKAO, GOOGLE, NAVER)
 ```
 
-> [!IMPORTANT]
-> 로컬 개발 시 `NEXTAUTH_URL`은 **`http://localhost:3000`** 으로 설정되어 있어야 한다.
-
 ### 4. Prisma 설정
 
 ```bash
-# (최초 또는 스키마 리셋 시)
 npx prisma migrate reset
 
-# (스키마 변경 시)
 npx prisma migrate dev --name "migration_name"
 
-# (클라이언트 갱신)
 npx prisma generate
 ```
 
