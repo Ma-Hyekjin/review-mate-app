@@ -212,7 +212,7 @@ npx prisma generate
 npm run dev
 ```
 
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인한다.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인.
 
 ---
 
