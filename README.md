@@ -112,10 +112,10 @@ review-mate-app/
 │   ├── hooks/             # Custom React Hooks
 │   ├── types/             # TypeScript 타입 정의
 │   ├── prisma/            # 데이터베이스 스키마
-│   └── public/            # 정적 파일
-├── docs/                  # 프로젝트 문서
-├── README.md
-└── LICENSE
+│   ├── docs/              # 프로젝트 문서
+│   ├── public/            # 정적 파일
+│   └── LICENSE            # 라이센스
+└── README.md
 ```
 
 ---
